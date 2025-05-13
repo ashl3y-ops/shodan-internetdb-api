@@ -1,47 +1,63 @@
-name: Shodan InternetDB
-description: |
-  This plugin queries the Shodan InternetDB API to retrieve open port and host data for a given IP address.
-version: 1.0.0
-category: DevOps
-uuid: shodan-internetdb-app
-vendor: Shodan
+openapi: 3.0.3
+info:
+  title: Shodan InternetDB API
+  description: |
+    Shodan tarafından sunulan InternetDB API, bir IP adresinin açık portlarını ve potansiyel tehdit bilgilerini hızlıca sorgulamanıza olanak tanır.
+  version: "1.0.0"
+  contact:
+    name: Shodan
+    url: https://internetdb.shodan.io/
 
-app_logo:
-  app_logo_light: shodan_logo_light.svg
-  app_logo_dark: shodan_logo_dark.svg
+servers:
+  - url: https://internetdb.shodan.io
 
-config_meta:
-  - name: base_url
-    type: string
-    description: Base URL for InternetDB API
-    placeholder: https://internetdb.shodan.io/
-    required: true
-    order: 0
-    default: https://internetdb.shodan.io/
+paths:
+  /{ip}:
+    get:
+      summary: IP bilgilerini al
+      description: Belirtilen IP adresinin açık portları ve etiketlerini getirir.
+      parameters:
+        - name: ip
+          in: path
+          required: true
+          description: Sorgulanacak IPv4 adresi
+          schema:
+            type: string
+            format: ipv4
+      responses:
+        '200':
+          description: Başarılı istek
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ip:
+                    type: string
+                    format: ipv4
+                    example: "8.8.8.8"
+                  ports:
+                    type: array
+                    items:
+                      type: integer
+                    example: [80, 443, 22]
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["vpn", "ssh"]
+                  hostnames:
+                    type: array
+                    items:
+                      type: string
+                    example: ["dns.google"]
+                  metadata:
+                    type: object
+                    additionalProperties: true
+        '404':
+          description: IP bulunamadı veya verisi yok
+        '500':
+          description: Sunucu hatası
 
-actions:
-  - name: get_ip_info
-    display_name: Get IP Info
-    description: Query InternetDB to retrieve data about an IP address.
-    input_params:
-      - name: ip
-        type: string
-        description: IP address to query
-        placeholder: 8.8.8.8
-        required: true
-        order: 0
-    output_params:
-      - name: ip
-        type: string
-      - name: ports
-        type: list
-      - name: cpes
-        type: list
-      - name: hostnames
-        type: list
-      - name: tags
-        type: list
-      - name: domains
-        type: list
-      - name: os
-        type: string
+components:
+  schemas: {}
