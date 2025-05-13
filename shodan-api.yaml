@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: Shodan InternetDB API
+  description: |
+    Shodan tarafından sunulan InternetDB API, bir IP adresinin açık portlarını ve potansiyel tehdit bilgilerini hızlıca sorgulamanıza olanak tanır.
+  version: "1.0.0"
+  contact:
+    name: Shodan
+    url: https://internetdb.shodan.io
+
+servers:
+  - url: https://internetdb.shodan.io
+
+paths:
+  /{ip}:
+    get:
+      summary: IP bilgilerini al
+      description: Belirtilen IP adresinin açık portları ve etiketlerini getirir.
+      parameters:
+        - name: ip
+          in: path
+          required: true
+          description: Sorgulanacak IPv4 adresi (örneğin 8.8.8.8)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: IP bilgileri başarıyla alındı
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ip:
+                    type: string
+                    example: "8.8.8.8"
+                  ports:
+                    type: array
+                    items:
+                      type: integer
+                    example: [80, 443, 22]
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["vpn", "ssh"]
+                  hostnames:
+                    type: array
+                    items:
+                      type: string
+                    example: ["dns.google"]
+                  metadata:
+                    type: object
+                    additionalProperties: true
+        '404':
+          description: IP bulunamadı veya veri mevcut değil
+        '500':
+          description: Sunucu hatası
