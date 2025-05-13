@@ -6,7 +6,7 @@ info:
   version: "1.0.0"
   contact:
     name: Shodan
-    url: https://internetdb.shodan.io/
+    url: https://internetdb.shodan.io
 
 servers:
   - url: https://internetdb.shodan.io
@@ -20,13 +20,12 @@ paths:
         - name: ip
           in: path
           required: true
-          description: Sorgulanacak IPv4 adresi
+          description: Sorgulanacak IPv4 adresi (örneğin 8.8.8.8)
           schema:
             type: string
-            format: ipv4
       responses:
         '200':
-          description: Başarılı istek
+          description: IP bilgileri başarıyla alındı
           content:
             application/json:
               schema:
@@ -34,7 +33,6 @@ paths:
                 properties:
                   ip:
                     type: string
-                    format: ipv4
                     example: "8.8.8.8"
                   ports:
                     type: array
@@ -55,9 +53,6 @@ paths:
                     type: object
                     additionalProperties: true
         '404':
-          description: IP bulunamadı veya verisi yok
+          description: IP bulunamadı veya veri mevcut değil
         '500':
           description: Sunucu hatası
-
-components:
-  schemas: {}
